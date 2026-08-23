@@ -1,0 +1,10 @@
+read_verilog -sv D:\project\Portfolio\demo_rtl\fixed\cpu_top.v
+read_verilog -sv D:\project\Portfolio\demo_rtl\fixed\alu.v
+read_verilog -sv D:\project\Portfolio\demo_rtl\fixed\regfile.v
+read_verilog -sv D:\project\Portfolio\demo_rtl\fixed\control_unit.v
+read_verilog -sv D:\project\Portfolio\demo_rtl\fixed\data_memory.v
+hierarchy -check -top cpu_top
+proc; opt; fsm; opt; memory; opt;
+techmap; opt;
+stat
+write_verilog -noattr D:\project\Portfolio\eda_workspace\cpu_top_synth.v

@@ -1,0 +1,27 @@
+# ChipPilot AI Configuration
+
+database:
+  db_path: "database/chippilot.db"
+
+workspace:
+  eda_workspace_dir: "./eda_workspace"
+  reports_dir: "./reports"
+
+rag:
+  model_name: "all-MiniLM-L6-v2"
+  top_k: 5
+  similarity_threshold: 0.35
+
+rca:
+  weights:
+    evidence_strength: 0.25
+    cross_tool_correlation: 0.30
+    rtl_relevance: 0.20
+    timing_relevance: 0.15
+    pattern_relevance: 0.10
+
+timing_defaults:
+  target_clock_period_ns: 10.0
+  clock_uncertainty_ns: 0.1
+  setup_time_ns: 0.2
+  hold_time_ns: 0.1

@@ -1,0 +1,22 @@
+{
+  "is_verified": true,
+  "status": "PASSED",
+  "baseline": {
+    "worst_slack": -2.04,
+    "total_cells": 0,
+    "inferred_latches": 0,
+    "lint_violations": 0
+  },
+  "fixed": {
+    "worst_slack": 3.65,
+    "total_cells": 0,
+    "inferred_latches": 0,
+    "lint_violations": 0
+  },
+  "delta": {
+    "slack_improvement_ns": 5.69,
+    "cell_count_change": 0,
+    "latches_eliminated": 0,
+    "lint_issues_resolved": 0
+  }
+}

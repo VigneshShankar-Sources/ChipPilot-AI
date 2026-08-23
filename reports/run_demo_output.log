@@ -1,0 +1,132 @@
+================================================================================
+CHIPPILOT AI -- INTELLIGENT RTL ENGINEERING ASSISTANT (CLI DEMO)
+================================================================================
+
+[Step 1/8] Ingesting & Parsing RTL Source Files...
+  -> Parsed 5 Verilog source files.
+  -> Flagged 1 hazard(s) in `alu` (alu.v)
+  -> Flagged 1 hazard(s) in `regfile` (regfile.v)
+  -> Flagged 2 hazard(s) in `control_unit` (control_unit.v)
+  -> Flagged 1 hazard(s) in `data_memory` (data_memory.v)
+
+[Step 2/8] Executing EDA Diagnostic Suite (Verilator Lint, Yosys Synthesis, OpenSTA STA)...
+
+[Step 3/8] Normalizing Heterogeneous Tool Reports...
+  -> Verilator Lint Findings: 0
+  -> Yosys Synthesized Cells: 0
+  -> OpenSTA Worst Slack (WNS): -2.04 ns (VIOLATION)
+
+[Step 4/8] Building Engineering Knowledge Graph (EKG)...
+  -> Constructed EKG: 57 Nodes, 54 Edges.
+
+[Step 5/8] Indexing Design Artifacts in Vector Store (FAISS)...
+  -> Indexed 10 AST and Report Chunks.
+
+[Step 6/8] Executing Deterministic Root-Cause Analyzer (RCA)...
+  -> Identified & Ranked 6 Candidate Root Causes:
+     [1] Critical Setup Timing Violation (alu.a[31] -> alu.result[31]) | Confidence: 92% | Severity: ERROR
+         Hypothesis: Excessive combinational logic depth between registers exceeds the clock period constraint.
+     [2] Structural Hazard: INCOMPLETE_CASE_STATEMENT in alu | Confidence: 51% | Severity: WARNING
+         Hypothesis: Combinational case statement lacks 'default' clause. High risk of unwanted latch inference.
+     [3] Structural Hazard: MISSING_ASYNC_RESET in regfile | Confidence: 51% | Severity: WARNING
+         Hypothesis: Sequential always block does not include reset logic. Registers will power-up in undefined state.
+
+[Step 7/8] Running Grounded AI Multi-Agent Reasoning...
+--------------------------------------------------------------------------------
+### ChipPilot AI Grounded Diagnostic Report
+
+**Engineering Query:** Why is timing failing in ALU and how do we fix it?
+
+**Overall Design Health:** 🔴 CRITICAL DEFECTS DETECTED
+- **Worst Slack:** `-2.04 ns` | **Lint Findings:** `0` | **Top Root Causes:** `3`
+
+#### 1. Top Identified Root Causes (Ranked by Confidence Score):
+**[1] Critical Setup Timing Violation (alu.a[31] -> alu.result[31])** (Confidence: `92%`)
+- **Location:** `alu:1`
+- **Diagnostic Mechanism:** Excessive combinational logic depth between registers exceeds the clock period constraint.
+- **Verified EDA Evidence:**
+  * `[OpenSTA:Timing] Path: alu.a[31] -> alu.result[31]`
+  * `[OpenSTA:Timing] Data Arrival: 11.8400 ns, Data Required: 9.8000 ns`
+  * `[OpenSTA:Timing] Setup Slack: -2.0400 ns (VIOLATION)`
+
+**[2] Structural Hazard: INCOMPLETE_CASE_STATEMENT in alu** (Confidence: `51%`)
+- **Location:** `D:\project\Portfolio\demo_rtl\faulty\alu.v:18`
+- **Diagnostic Mechanism:** Combinational case statement lacks 'default' clause. High risk of unwanted latch inference.
+- **Verified EDA Evidence:**
+  * `[AST Scanner:alu.v:18] INCOMPLETE_CASE_STATEMENT: Combinational case statement lacks 'default' clause. High risk of unwanted latch inference.`
+
+**[3] Structural Hazard: MISSING_ASYNC_RESET in regfile** (Confidence: `51%`)
+- **Location:** `D:\project\Portfolio\demo_rtl\faulty\regfile.v:21`
+- **Diagnostic Mechanism:** Sequential always block does not include reset logic. Registers will power-up in undefined state.
+- **Verified EDA Evidence:**
+  * `[AST Scanner:regfile.v:21] MISSING_ASYNC_RESET: Sequential always block does not include reset logic. Registers will power-up in undefined state.`
+
+#### 2. Grounded Design Citations (Hybrid RAG):
+**Citation [1]: `alu.a[31]` (Type: `TIMING_PATH`, Relevance: `0.62`)**
+```verilog
+Timing Path: alu.a[31] -> alu.result[31]
+Setup Slack: -2.04 ns
+Arrival: 11.84 ns, Required: 9.8 ns
+```
+
+**Citation [2]: `alu.v` (Type: `RTL_MODULE_HEADER`, Relevance: `0.56`)**
+```verilog
+Module: alu in file alu.v
+Ports: a, b, opcode, result, overflow
+Clocks: []
+Resets: []
+```
+
+**Citation [3]: `data_memory.v` (Type: `RTL_ALWAYS_BLOCK`, Relevance: `0.32`)**
+```verilog
+Module data_memory (data_memory.v:15) - Sequential Clocked Always Block @(posedge clk):
+if (we) begin
+            mem[addr[7:0]] <= wdata;
+```
+
+**Citation [4]: `cpu_top.v` (Type: `RTL_MODULE_HEADER`, Relevance: `0.32`)**
+```verilog
+Module: cpu_top in file cpu_top.v
+Ports: clk, rst_n, instr, dmem_addr, dmem_wdata, dmem_we, alu_out_test
+Clocks: ['clk']
+Resets: ['rst_n']
+```
+
+#### 3. Prescribed Engineering Actions:
+2. **Pipeline Critical Path:** Break deep combinational arithmetic clouds by inserting an intermediate pipeline stage register.
+3. **Add Reset Handling:** Implement synchronous or asynchronous reset conditions in clocked `always` blocks.
+
+**Closed-Loop Verification Protocol:**
+1. Apply prescribed RTL modifications.
+2. Re-run Verilator lint and OpenSTA to verify `Worst Slack >= 0.00 ns` and 0 inferred latches.
+3. Submit for final engineering code review.
+--------------------------------------------------------------------------------
+
+[Step 8/8] Executing Closed-Loop Verification Harness (Faulty vs Fixed Reference)...
+
+================================================================================
+COMPARATIVE PPA VERIFICATION SCORECARD
+================================================================================
+  Metric                         | Baseline (Pre-Fix)   | Fixed (Post-Fix)     | Improvement Delta
+  ----------------------------------------------------------------------------
+  Worst Slack (WNS)              | -2.04 ns              | +3.65 ns              | +5.69 ns
+  Inferred Latches               | 0                    | 0                    | -0 latches
+  Lint Rule Violations           | 0                    | 0                    | -0 warnings
+  Total Cell Count (Area)        | 0                    | 0                    | 0 cells
+================================================================================
+  Final Verification Status: PASSED -- ALL DEFECTS RESOLVED & TIMING CLOSED
+================================================================================
+
+[Audit & Verification] Compiling Publication-Ready PDF Reports...
+  -> Engineering Audit Report (PDF):     D:\project\Portfolio\reports\cpu_top_audit_report.pdf
+  -> Verification Sign-Off Report (PDF): D:\project\Portfolio\reports\cpu_top_verification_signoff.pdf
+  -> Verification Scorecard (JSON):      D:\project\Portfolio\reports\cpu_top_verification_scorecard.json
+  -> Executive Summary (Markdown):       D:\project\Portfolio\reports\cpu_top_executive_summary.md
+
+################################################################################
+  ALL OUTPUTS SUCCESSFULLY GENERATED AND SAVED TO 'reports/'
+  Files are ready for developer verification & signoff.
+################################################################################
+
+  -> Complete Execution Log saved to:   D:\project\Portfolio\reports\run_demo_output.log
+
